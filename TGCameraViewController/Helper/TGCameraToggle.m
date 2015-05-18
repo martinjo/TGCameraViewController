@@ -43,6 +43,9 @@
     AVCaptureDeviceInput *deviceInput = [session.inputs lastObject];
     AVCaptureDeviceInput *reverseDeviceInput = [self reverseDeviceInput:deviceInput];
     
+    if(!reverseDeviceInput)
+        return;
+    
     [session beginConfiguration];
     [session removeInput:deviceInput];
     [session addInput:reverseDeviceInput];
