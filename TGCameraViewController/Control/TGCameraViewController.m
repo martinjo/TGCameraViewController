@@ -131,10 +131,12 @@
         _actionsView.hidden = NO;
         
         _gridButton.enabled =
-        _toggleButton.enabled =
         _shotButton.enabled =
         _albumButton.enabled =
         _flashButton.enabled = YES;
+        
+        
+        _toggleButton.enabled = _camera.canToggleCamera;
     }];
      
     if (_wasLoaded == NO) {

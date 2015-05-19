@@ -53,6 +53,12 @@ NSMutableDictionary *optionDictionary;
 
 @implementation TGCamera
 
+
+-(BOOL)canToggleCamera
+{
+    return [TGCameraToggle reverseDeviceInput:[self.session.inputs lastObject]] != nil;
+}
+
 + (instancetype)cameraWithFlashButton:(UIButton *)flashButton
 {
     TGCamera *camera = [TGCamera newCamera];
@@ -60,15 +66,6 @@ NSMutableDictionary *optionDictionary;
     
     return camera;
 }
-
-+ (instancetype)cameraWithFlashButton:(UIButton *)flashButton devicePosition:(AVCaptureDevicePosition)devicePosition
-{
-    TGCamera *camera = [TGCamera newCamera];
-    [camera setupWithFlashButton:flashButton devicePosition:devicePosition];
-    
-    return camera;
-}
-
 
 + (void)setOption:(NSString *)option value:(id)value
 {
@@ -241,74 +238,6 @@ NSMutableDictionary *optionDictionary;
     
     [TGCameraFlash flashModeWithCaptureSession:_session andButton:flashButton];
 }
-
-- (void)setupWithFlashButton:(UIButton *)flashButton devicePosition:(AVCaptureDevicePosition)devicePosition
-{
-    //
-    // create session
-    //
-    
-    _session = [AVCaptureSession new];
-    _session.sessionPreset = AVCaptureSessionPresetPhoto;
-    
-    //
-    // setup device
-    //
-    
-    NSArray *devices = [AVCaptureDevice devicesWithMediaType:AVMediaTypeVideo];
-    AVCaptureDevice *device;
-    for (AVCaptureDevice *aDevice in devices) {
-        if (aDevice.position == devicePosition) {
-            device = aDevice;
-        }
-    }
-    if (!device) {
-        device = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo];
-    }
-    
-    if ([device lockForConfiguration:nil]) {
-        if (device.autoFocusRangeRestrictionSupported) {
-            device.autoFocusRangeRestriction = AVCaptureAutoFocusRangeRestrictionNear;
-        }
-        
-        if (device.smoothAutoFocusSupported) {
-            device.smoothAutoFocusEnabled = YES;
-        }
-        
-        if ([device isFocusModeSupported:AVCaptureFocusModeContinuousAutoFocus]) {
-            device.focusMode = AVCaptureFocusModeContinuousAutoFocus;
-        }
-        
-        device.exposureMode = AVCaptureExposureModeContinuousAutoExposure;
-        
-        [device unlockForConfiguration];
-    }
-    
-    //
-    // add device input to session
-    //
-    
-    AVCaptureDeviceInput *deviceInput = [AVCaptureDeviceInput deviceInputWithDevice:device error:nil];
-    [_session addInput:deviceInput];
-    
-    //
-    // add output to session
-    //
-    
-    NSDictionary *outputSettings = [NSDictionary dictionaryWithObjectsAndKeys:AVVideoCodecJPEG, AVVideoCodecKey, nil];
-    
-    _stillImageOutput = [AVCaptureStillImageOutput new];
-    _stillImageOutput.outputSettings = outputSettings;
-    
-    [_session addOutput:_stillImageOutput];
-    
-    //
-    // setup flash button
-    //
-    
-    [TGCameraFlash flashModeWithCaptureSession:_session andButton:flashButton];
-}
-
 
 + (void)initOptions
 {

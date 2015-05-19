@@ -36,6 +36,8 @@
 
 @interface TGCamera : NSObject
 
+@property (nonatomic) BOOL canToggleCamera;
+
 + (instancetype)new __attribute__
 ((unavailable("[+new] is not allowed, use [+cameraWithRootView:andCaptureView:]")));
 
@@ -43,8 +45,6 @@
 ((unavailable("[-init] is not allowed, use [+cameraWithRootView:andCaptureView:]")));
 
 + (instancetype)cameraWithFlashButton:(UIButton *)flashButton;
-+ (instancetype)cameraWithFlashButton:(UIButton *)flashButton devicePosition:(AVCaptureDevicePosition)devicePosition;
-
 + (void)setOption:(NSString*)option value:(id)value;
 + (id)getOption:(NSString*)option;
 

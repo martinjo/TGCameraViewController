@@ -29,5 +29,6 @@
 @interface TGCameraToggle : NSObject
 
 + (void)toogleWithCaptureSession:(AVCaptureSession *)session;
++ (AVCaptureDeviceInput *)reverseDeviceInput:(AVCaptureDeviceInput *)deviceInput;
 
 @end
